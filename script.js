@@ -194,3 +194,13 @@ function displayKillcams(data) {
     })
     .join('');
 }
+
+if (!isAdminPage) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const data = getStoredData();
+    displayPlayers(data);
+    displayLevelLeaderboard(data);
+    displayDeathsLeaderboard(data);
+    displayKillcams(data);
+  });
+}
