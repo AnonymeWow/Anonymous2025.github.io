@@ -1,37 +1,142 @@
-/* Reset & Base */
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:Arial, sans-serif; background:#1a1a1a; color:#f0f0f0; }
-header { background:#333; padding:1rem; text-align:center; }
-header h1 { font-size:2rem; }
+/* style.css */
+/* Variables couleur néon */
+:root {
+  --bg: #0d0d0d;
+  --panel: rgba(20,20,30,0.85);
+  --text: #e0e0e0;
+  --accent: #00ffff;
+  --accent2: #ff00ff;
+}
 
-/* Grille de cartes */
-.container { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; padding:1rem; }
-.card { background:#2b2b2b; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.5); display:flex; flex-direction:column; }
-.card header { background:#444; padding:.5rem; text-align:center; }
-.card header h2 { font-size:1.2rem; }
-.card .content { padding:.75rem; flex:1; }
-.content p,label { margin-bottom:.5rem; }
-.content .status,.content .level { font-weight:bold; }
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  font-family: 'Orbitron', sans-serif;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+.bg-blur {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background:
+    radial-gradient(circle at center, rgba(0,255,255,0.1), transparent 70%),
+    radial-gradient(circle at top right, rgba(255,0,255,0.1), transparent 70%);
+  backdrop-filter: blur(8px);
+  z-index: -1;
+}
+main { padding: 2rem; }
+.neon-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+  margin-bottom: 2rem;
+}
+.hidden { display: none; }
 
 /* Boutons */
-.btn-stream, .btn-increment, .btn-validate { display:inline-block; background:#9146ff; color:#fff; padding:.4rem .8rem; margin:.25rem .1rem; border:none; border-radius:4px; cursor:pointer; transition:background .3s; font-size:.9rem; text-decoration:none; text-align:center; }
-.btn-stream:hover, .btn-increment:hover, .btn-validate:hover { background:#772ce8; }
-select { width:100%; padding:.4rem; margin-bottom:.5rem; border-radius:4px; border:1px solid #555; background:#1a1a1a; color:#f0f0f0; }
+.neon-btn {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent2);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.neon-btn:hover {
+  box-shadow: 0 0 16px var(--accent), 0 0 32px var(--accent2);
+}
 
-/* Validate container */
-.validate-container { text-align:center; margin:1rem 0; }
+/* Cards néon */
+.neon-card {
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 0 8px var(--accent);
+  transition: transform 0.2s ease;
+}
+.neon-card:hover {
+  transform: translateY(-4px);
+}
 
-/* Résumé lignes */
-.players-container { margin-top:2rem; display:flex; flex-direction:column; gap:.5rem; padding:0 1rem; }
-.player-line { background:#2b2b2b; border:1px solid #444; border-radius:6px; padding:.5rem 1rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-.player-line span { margin-right:1rem; }
-.player-line a { color:#9146ff; text-decoration:none; margin-left:auto; }
+/* Formulaire de login */
+#login-form {
+  max-width: 360px;
+  margin: 4rem auto;
+}
+#login-form h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+#login-form label {
+  display: block;
+  margin-bottom: 1rem;
+}
+#login-form input {
+  width: 100%;
+  padding: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--accent);
+  border-radius: 0.5rem;
+  color: var(--text);
+}
+#login-error {
+  color: #FF6B6B;
+  margin-top: 0.5rem;
+}
 
-/* Classement tables */
-.leaderboard { margin:2rem 1rem; }
-.leaderboard h3 { margin-bottom:.5rem; }
-.leaderboard table { width:100%; border-collapse:collapse; margin-bottom:1.5rem; }
-.leaderboard th, .leaderboard td { border:1px solid #555; padding:.5rem; text-align:left; }
-.leaderboard th { background:#444; }
+/* Grid pour cards */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap: 1.5rem;
+}
 
-footer { text-align:center; padding:1rem; font-size:.9rem; }
+/* Actions (bouton Enregistrer et Retour Admin) */
+.actions {
+  text-align: right;
+  margin-top: 1rem;
+}
+.actions.admin-return {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+/* Leaderboards */
+.leaderboards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+.leaderboard h2 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  color: var(--accent2);
+  text-shadow: 0 0 6px var(--accent2);
+}
+.leaderboard ol {
+  list-style: none;
+  counter-reset: rank;
+}
+.leaderboard li {
+  counter-increment: rank;
+  padding-left: 2rem;
+  margin-bottom: 0.8rem;
+  position: relative;
+}
+.leaderboard li::before {
+  content: counter(rank);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  color: var(--accent);
+}
+.leaderboard li span {
+  margin-left: 0.5rem;
+}

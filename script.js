@@ -1,103 +1,127 @@
-// Classes WoW
-const classesWOW = ['Chaman','Chasseur','Chasseur de démons','Chevalier de la Mort','Démoniste','Druide','Guerrier','Mage','Moine','Paladin','Prêtre','Voleur'];
+// script.js
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialisation des cartes statiques
-  document.querySelectorAll('.card .content').forEach(initCard);
-  // Validation
-  document.getElementById('validateBtn').addEventListener('click', () => {
-    showSummary();
-    showLeaderboard();
-  });
+// ====== ADMIN CONFIG ======
+const ADMIN_USER = 'WowJL2025';
+const ADMIN_PASS = '2025lakiffance';
+
+// ====== DONNÉES PAR DÉFAUT ======
+const playersDefault = [
+  { name:'Aenot',       classe:'Rogue',   lvl:10, morts:1, stream:'https://www.twitch.tv/aenot' },
+  { name:'JLTomy',      classe:'Paladin', lvl:14, morts:0, stream:'https://www.twitch.tv/jltomy' },
+  { name:'Fana',        classe:'Mage',    lvl:13, morts:0, stream:'https://www.twitch.tv/fana' },
+  { name:'Nikos',       classe:'Rogue',   lvl:7,  morts:2, stream:'https://www.twitch.tv/nikos' },
+  { name:'Viggy_Night', classe:'Chasseur',lvl:5,  morts:3, stream:'https://www.twitch.tv/viggy_night' },
+  { name:'FakeMonster', classe:'Mage',    lvl:18, morts:0, stream:'https://www.twitch.tv/Fakemonster' }
+];
+
+// ====== INIT ======
+window.addEventListener('DOMContentLoaded', () => {
+  const page = location.pathname.split('/').pop();
+  if (page === 'admin.html') initAdmin();
+  else initClient();
 });
 
-function initCard(content) {
-  // Classe dropdown
-  const pClasse = content.querySelector('p[data-field="classe"]');
-  const initCl = pClasse.textContent.split(':')[1].trim();
-  const lblC = document.createElement('label'); lblC.textContent = 'Classe :';
-  const sel = document.createElement('select');
-  classesWOW.forEach(cl => { const o=new Option(cl,cl); if(cl===initCl) o.selected=true; sel.add(o); });
-  pClasse.replaceWith(lblC, sel);
+// ====== ADMIN ======
+function initAdmin(){
+  document.getElementById('btn-login')
+    .addEventListener('click', () => {
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('editor').classList.remove('hidden');
+        renderEditor();
+      } else {
+        document.getElementById('login-error').textContent = 'Erreur de connexion';
+      }
+    });
 
-  // Niveau +/-
-  const pLvl = content.querySelector('p[data-field="lvl"]');
-  const lvlSpan = pLvl.querySelector('.level');
-  const btnDown = makeBtn('- Niveau', ()=>updateSpan(lvlSpan,-1,1,60));
-  const btnUp   = makeBtn('+ Niveau', ()=>updateSpan(lvlSpan,+1,1,60));
-  pLvl.after(btnDown, btnUp);
-
-  // Mort +
-  const pM = content.querySelector('p[data-field="morts"]');
-  const mSpan = pM.querySelector('.status');
-  const btnM = makeBtn('+ Mort', ()=>updateSpan(mSpan,+1,0));
-  pM.after(btnM);
+  document.getElementById('btn-save')
+    .addEventListener('click', () => {
+      saveData();
+      // redirection vers la page client après enregistrement
+      window.location.href = 'client.html';
+    });
 }
 
-function makeBtn(text, cb) {
-  const b=document.createElement('button'); b.className='btn-increment'; b.textContent=text; b.addEventListener('click',cb); return b;
-}
-
-function updateSpan(span, delta, min=0, max=Infinity) {
-  let v= parseInt(span.textContent,10)+delta; if(v<min) v=min; if(v>max) v=max; span.textContent=v;
-}
-
-function gatherData() {
-  const data = [];
-  document.querySelectorAll('.card').forEach(card => {
-    const name = card.querySelector('header h2').textContent;
-    const classe = card.querySelector('select').value;
-    const lvl = parseInt(card.querySelector('.level').textContent,10);
-    const morts = parseInt(card.querySelector('.status').textContent,10);
-    const stream = card.querySelector('.btn-stream').href;
-    data.push({ name, classe, lvl, morts, stream });
-  });
-  return data;
-}
-
-function showSummary() {
-  const cont = document.getElementById('players-container');
-  cont.innerHTML='';
-  gatherData().forEach(p => {
-    const div = document.createElement('div'); div.className='player-line';
-    div.innerHTML = `
-      <span><strong>${p.name}</strong></span>
-      <span>Classe : ${p.classe}</span>
-      <span>Niveau : ${p.lvl}</span>
-      <span>Morts : ${p.morts}</span>
-      <a href="${p.stream}" target="_blank">Stream</a>
+function renderEditor(){
+  const container = document.getElementById('edit-container');
+  container.innerHTML = '';
+  getStoredData().forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'neon-card';
+    card.innerHTML = `
+      <header><h2>${p.name}</h2></header>
+      <label>Classe:
+        <select data-field="classe"></select>
+      </label>
+      <label>Niveau:
+        <input type="number" data-field="lvl" min="1" max="60" value="${p.lvl}">
+      </label>
+      <label>Morts:
+        <input type="number" data-field="morts" min="0" value="${p.morts}">
+      </label>
     `;
-    cont.appendChild(div);
+    const sel = card.querySelector('select');
+    ['Rogue','Paladin','Mage','Chasseur','Druid','Warlock']
+      .forEach(c => sel.add(new Option(c, c)));
+    sel.value = p.classe;
+    container.append(card);
   });
 }
 
-function showLeaderboard() {
-  const lb = document.getElementById('leaderboard');
-  lb.innerHTML = '';
-  const data = gatherData();
-
-  // Classement morts
-  const byDeaths = [...data].sort((a,b) => b.morts - a.morts);
-  lb.append(createTableSection('Classement par Morts', byDeaths, 'morts'));
-
-  // Classement niveau
-  const byLevel = [...data].sort((a,b) => b.lvl - a.lvl);
-  lb.append(createTableSection('Classement par Niveau', byLevel, 'lvl'));
+function saveData(){
+  const cards = document.querySelectorAll('#edit-container .neon-card');
+  const data = Array.from(cards).map(card => {
+    const name   = card.querySelector('h2').textContent;
+    const classe = card.querySelector('select').value;
+    const lvl    = +card.querySelector('input[data-field=\"lvl\"]').value;
+    const morts  = +card.querySelector('input[data-field=\"morts\"]').value;
+    const stream = playersDefault.find(x => x.name === name).stream;
+    return { name, classe, lvl, morts, stream };
+  });
+  localStorage.setItem('wow_hc_players', JSON.stringify(data));
 }
 
-function createTableSection(title, data, key) {
-  const section = document.createElement('div');
-  const h3 = document.createElement('h3'); h3.textContent = title;
-  const table = document.createElement('table');
-  const thead = document.createElement('thead');
-  thead.innerHTML = '<tr><th>Rang</th><th>Nom</th><th>' + (key === 'morts' ? 'Morts' : 'Niveau') + '</th></tr>';
-  const tbody = document.createElement('tbody');
-  data.forEach((p,i) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${i+1}</td><td>${p.name}</td><td>${p[key]}</td>`;
-    tbody.appendChild(tr);
-  });
-  table.append(thead, tbody);
-  section.append(h3, table);
-  return section;
+// ====== CLIENT ======
+function initClient(){
+  const data = getStoredData();
+  displayPlayers(data);
+  displayDeathsLeaderboard(data);
+  displayLevelLeaderboard(data);
+  document.getElementById('btn-admin')
+    .addEventListener('click', () => window.location.href = 'admin.html');
+}
+
+function getStoredData(){
+  const s = localStorage.getItem('wow_hc_players');
+  return s ? JSON.parse(s) : playersDefault;
+}
+
+function displayPlayers(data){
+  const c = document.getElementById('players-container');
+  c.innerHTML = data.map(p => `
+    <div class="neon-card">
+      <h3>${p.name}</h3>
+      <p>${p.classe}</p>
+      <p>lvl ${p.lvl} • ${p.morts} morts</p>
+      <a href="${p.stream}" target="_blank">Live</a>
+    </div>
+  `).join('');
+}
+
+function displayDeathsLeaderboard(data){
+  const sorted = [...data].sort((a,b) => a.morts - b.morts);
+  document.getElementById('leaderboard-deaths').innerHTML =
+    '<h2>Classement Morts</h2><ol>' +
+    sorted.map(p => `<li>${p.name}<span>${p.morts} morts</span></li>`).join('') +
+    '</ol>';
+}
+
+function displayLevelLeaderboard(data){
+  const sorted = [...data].sort((a,b) => b.lvl - a.lvl);
+  document.getElementById('leaderboard-levels').innerHTML =
+    '<h2>Classement Niveaux</h2><ol>' +
+    sorted.map(p => `<li>${p.name}<span>lvl ${p.lvl}</span></li>`).join('') +
+    '</ol>';
 }
