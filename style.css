@@ -99,26 +99,29 @@ main { padding: 2rem; }
 /* Conteneur trio : 3 colonnes côte-à-côte */
 .stats-flex {
   display: flex;
-  flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center;
-  align-items: flex-start;
   margin-top: 2rem;
 }
 
-/* Chaque carte prendra jusqu'à 30% de largeur (min 280px) */
-.stats-flex > .neon-card {
-  flex: 1 1 280px;
-  max-width: 30%;
+/* Chaque colonne (leaderboards et killcams) prend un tiers de l'espace */
+.stats-flex > .leaderboard,
+.stats-flex > .killcams {
+  flex: 1;
+  /* pour éviter le débordement du contenu */
+  min-width: 0;
 }
 
-/* Pour mobile, on empile */
-@media (max-width: 900px) {
-  .stats-flex > .neon-card {
-    max-width: 100%;
+/* Titles et cartes conservent leur style néon */
+.stats-flex .neon-card {
+  padding: 1rem;
+}
+
+/* Responsive : sur petits écrans, on empile en colonne */
+@media (max-width: 768px) {
+  .stats-flex {
+    flex-direction: column;
   }
 }
-
 /* Actions (boutons) */
 .actions {
   text-align: right;
