@@ -1,4 +1,3 @@
-<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Admin - WoW HC Tracker</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Polices WoW : Friz Quadrata ou alternative -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
@@ -14,7 +12,6 @@
 <body>
   <div class="bg-blur"></div>
   <main>
-    <!-- Login -->
     <div id="login-form" class="neon-card">
       <h2>Connexion Admin</h2>
       <label>
@@ -29,7 +26,6 @@
       <p id="login-error"></p>
     </div>
 
-    <!-- Éditeur -->
     <section id="editor" class="hidden">
       <div class="actions top-right">
         <button id="btn-save" class="neon-btn">Enregistrer</button>
@@ -38,6 +34,24 @@
       <div id="edit-container" class="grid-cards"></div>
     </section>
   </main>
+
+  <!-- Firebase SDK + config -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDr92ELmBufANmeByuo8Tec7b1ZrmIsXBU",
+      authDomain: "wow-hc-tracker.firebaseapp.com",
+      databaseURL: "https://wow-hc-tracker-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "wow-hc-tracker",
+      storageBucket: "wow-hc-tracker.firebasestorage.app",
+      messagingSenderId: "275341751162",
+      appId: "1:275341751162:web:392a00f3bde955e889dcc3",
+      measurementId: "G-D8FW1JL90Y"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
