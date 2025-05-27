@@ -2,7 +2,7 @@
 
 // ====== ADMIN CONFIG ======
 const ADMIN_USER = 'WowJL2025';
-const ADMIN_PASS = '2025lakiffance';
+const ADMIN_PASS = 'Z@5nW8%uF2kL#pR1';
 
 // ====== DONNÉES PAR DÉFAUT ======
 const playersDefault = [
