@@ -139,3 +139,38 @@ main { padding: 2rem; }
 .leaderboard li span {
   margin-left: 0.5rem;
 }
+
+.killcams {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+}
+.killcams h2 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  color: var(--accent);
+  text-shadow: 0 0 6px var(--accent);
+  text-align: center;
+}
+.killcams ul {
+  list-style: none;
+  counter-reset: item;
+}
+.killcams li {
+  counter-increment: item;
+  margin-bottom: 0.8rem;
+  position: relative;
+  padding-left: 2rem;
+}
+.killcams li::before {
+  content: counter(item);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  color: var(--accent2);
+}
+.killcams li a {
+  color: var(--text);
+  text-decoration: underline;
+  word-break: break-all;
+}
