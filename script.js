@@ -11,12 +11,12 @@ async function sha256Hex(str) {
 }
 
 const playersDefault = [
-  { name: 'Aenot', classe: 'Rogue', lvl: 10, morts: 1, stream: 'https://twitch.tv/aenot', killcams: [] },
-  { name: 'JLTomy', classe: 'Paladin', lvl: 14, morts: 0, stream: 'https://www.twitch.tv/jltomy', killcams: [] },
-  { name: 'Fana', classe: 'Mage', lvl: 13, morts: 0, stream: 'https://www.twitch.tv/fana', killcams: [] },
-  { name: 'Nikos', classe: 'Rogue', lvl: 7, morts: 2, stream: 'https://www.twitch.tv/nikos', killcams: [] },
-  { name: 'Viggy_Night', classe: 'Chasseur', lvl: 5, morts: 3, stream: 'https://www.twitch.tv/viggy_night', killcams: [] },
-  { name: 'FakeMonster', classe: 'Mage', lvl: 18, morts: 0, stream: 'https://www.twitch.tv/fakemonster', killcams: [] }
+  { name: 'Aenot', classe: 'Rogue', lvl: 10, maxLevel: 10, morts: 1, stream: 'https://twitch.tv/aenot', killcams: [] },
+  { name: 'JLTomy', classe: 'Paladin', lvl: 14, maxLevel: 10, morts: 0, stream: 'https://www.twitch.tv/jltomy', killcams: [] },
+  { name: 'Fana', classe: 'Mage', lvl: 13, maxLevel: 10, morts: 0, stream: 'https://www.twitch.tv/fana', killcams: [] },
+  { name: 'Nikos', classe: 'Rogue', lvl: 7, maxLevel: 10, morts: 2, stream: 'https://www.twitch.tv/nikos', killcams: [] },
+  { name: 'Viggy_Night', classe: 'Chasseur', maxLevel: 10, lvl: 5, morts: 3, stream: 'https://www.twitch.tv/viggy_night', killcams: [] },
+  { name: 'FakeMonster', classe: 'Mage', maxLevel: 10, lvl: 18, morts: 0, stream: 'https://www.twitch.tv/fakemonster', killcams: [] }
 ];
 
 const isAdminPage = window.location.pathname.endsWith('admin.html');
@@ -79,6 +79,8 @@ function renderEditor() {
         <input type="number" data-field="lvl" min="1" max="60" value="${p.lvl}">
         <label>Morts :</label>
         <input type="number" data-field="morts" min="0" value="${p.morts}">
+        <label>Plus haut level atteint :</label>
+        <input type="number" data-field="maxLevel" min="1" max="60" value="${p.maxLevel}">
         <label>Stream :</label>
         <input type="url" data-field="stream" value="${p.stream}">
         <label>Killcams :</label>
@@ -130,6 +132,7 @@ async function onSave() {
       name: card.querySelector('h2').textContent,
       classe: card.querySelector('select[data-field="classe"]').value,
       lvl: +card.querySelector('input[data-field="lvl"]').value,
+      maxLevel: +card.querySelector('input[data-field="maxLevel"]').value,
       morts: +card.querySelector('input[data-field="morts"]').value,
       stream: card.querySelector('input[data-field="stream"]').value.trim(),
       killcams: Array.from(card.querySelectorAll('input[data-field=\"killcams\"]'))
@@ -161,6 +164,8 @@ function displayPlayers(data) {
       <h3>${p.name}</h3>
       <p>${p.classe}</p>
       <p>lvl ${p.lvl} • ${p.morts} morts</p>
+      <p>lvl ${p.lvl} • ${p.morts} mort${p.morts > 1 ? 's' : ''}</p>
+      <p>Plus haut level atteint ${p.maxLevel}</p>
       ${p.stream ? `<a href="${p.stream}" target="_blank" class="stream-link">Live</a>` : ''}
     </div>
   `).join('');
