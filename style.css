@@ -326,3 +326,26 @@ main > .actions.top-right {
   color: var(--wow-gold);
   text-shadow: 0 0 4px var(--wow-gold);
 }
+
+.futuristic-footer {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;         /* pour que le texte ne capte pas les clics */
+  font-family: 'MedievalSharp', serif;
+  font-size: 0.9rem;
+  color: var(--accent);
+  text-shadow:
+    0 0 4px var(--wow-arcane),
+    0 0 8px var(--wow-gold),
+    0 0 12px var(--accent);
+}
+
+.futuristic-footer strong {
+  color: var(--wow-gold);
+  text-shadow:
+    0 0 4px var(--wow-gold),
+    0 0 8px var(--wow-gold),
+    0 0 16px var(--wow-gold);
+}
