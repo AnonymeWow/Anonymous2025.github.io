@@ -6,12 +6,12 @@ const ADMIN_PASS = 'Z@5nW8%uF2kL#pR1';
 
 // ====== DONNÉES PAR DÉFAUT ======
 const playersDefault = [
-  { name:'Aenot',       classe:'Rogue',   lvl:10, morts:1, stream:'https://www.twitch.tv/aenot' },
-  { name:'JLTomy',      classe:'Paladin', lvl:14, morts:0, stream:'https://www.twitch.tv/jltomy' },
-  { name:'Fana',        classe:'Mage',    lvl:13, morts:0, stream:'https://www.twitch.tv/fana' },
-  { name:'Nikos',       classe:'Rogue',   lvl:7,  morts:2, stream:'https://www.twitch.tv/nikos' },
-  { name:'Viggy_Night', classe:'Chasseur',lvl:5,  morts:3, stream:'https://www.twitch.tv/viggy_night' },
-  { name:'FakeMonster', classe:'Mage',    lvl:18, morts:0, stream:'https://www.twitch.tv/Fakemonster' }
+  { name:'Aenot',       classe:'Rogue',   lvl:10, morts:1, stream:'https://www.twitch.tv/aenot',       killcam:'' },
+  { name:'JLTomy',      classe:'Paladin', lvl:14, morts:0, stream:'https://www.twitch.tv/jltomy',      killcam:'' },
+  { name:'Fana',        classe:'Mage',    lvl:13, morts:0, stream:'https://www.twitch.tv/fana',        killcam:'' },
+  { name:'Nikos',       classe:'Rogue',   lvl:7,  morts:2, stream:'https://www.twitch.tv/nikos',       killcam:'' },
+  { name:'Viggy_Night', classe:'Chasseur',lvl:5,  morts:3, stream:'https://www.twitch.tv/viggy_night',killcam:'' },
+  { name:'FakeMonster', classe:'Mage',    lvl:18, morts:0, stream:'https://www.twitch.tv/Fakemonster', killcam:'' }
 ];
 
 // ====== INIT ======
@@ -60,11 +60,14 @@ function renderEditor(){
       <label>Morts:
         <input type="number" data-field="morts" min="0" value="${p.morts}">
       </label>
+      <label>Ajout de Killcam:
+        <input type="url" data-field="killcam" placeholder="https://... " value="${p.killcam}">
+      </label>
     `;
-    const sel = card.querySelector('select');
+    // Remplir la select
     ['Rogue','Paladin','Mage','Chasseur','Druid','Warlock']
-      .forEach(c => sel.add(new Option(c, c)));
-    sel.value = p.classe;
+      .forEach(c => card.querySelector('select').add(new Option(c, c)));
+    card.querySelector('select').value = p.classe;
     container.append(card);
   });
 }
@@ -73,11 +76,16 @@ function saveData(){
   const cards = document.querySelectorAll('#edit-container .neon-card');
   const data = Array.from(cards).map(card => {
     const name   = card.querySelector('h2').textContent;
-    const classe = card.querySelector('select').value;
-    const lvl    = +card.querySelector('input[data-field="lvl"]').value;
-    const morts  = +card.querySelector('input[data-field="morts"]').value;
-    const stream = playersDefault.find(x => x.name === name).stream;
-    return { name, classe, lvl, morts, stream };
+    const fields = card.querySelectorAll('[data-field]');
+    const obj = { name };
+    fields.forEach(el => {
+      const key = el.getAttribute('data-field');
+      const val = el.value;
+      obj[key] = (key === 'lvl' || key === 'morts') ? +val : val;
+    });
+    // conserver le stream d'origine
+    obj.stream = playersDefault.find(x => x.name === name).stream;
+    return obj;
   });
   localStorage.setItem('wow_hc_players', JSON.stringify(data));
 }
@@ -88,6 +96,7 @@ function initClient(){
   displayPlayers(data);
   displayDeathsLeaderboard(data);
   displayLevelLeaderboard(data);
+  displayKillcams(data);
   document.getElementById('btn-admin')
     .addEventListener('click', () => window.location.href = 'admin.html');
 }
@@ -123,4 +132,12 @@ function displayLevelLeaderboard(data){
     '<h2>Classement Niveaux</h2><ol>' +
     sorted.map(p => `<li>${p.name}<span>lvl ${p.lvl}</span></li>`).join('') +
     '</ol>';
+}
+
+function displayKillcams(data){
+  const ul = document.getElementById('killcam-list');
+  ul.innerHTML = data
+    .filter(p => p.killcam)
+    .map(p => `<li>${p.name}: <a href="${p.killcam}" target="_blank">${p.killcam}</a></li>`)
+    .join('');
 }
