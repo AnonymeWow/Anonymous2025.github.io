@@ -1,7 +1,5 @@
-// script.js
-
 // ====== PROTECTION LOGIN CÔTÉ CLIENT (hashé) ======
-const ADMIN_CREDENTIAL_HASH = 'ea3c3274b14f7bc07c9e30b63fd2636cd601084f37e261ab4ee032db68b45191';
+const ADMIN_CREDENTIAL_HASH = '6686db6bfedd2373f4f0c4d477857dccdc6c09e8cdf42f7c272853290c415e44';
 
 async function sha256Hex(str) {
   const buf = new TextEncoder().encode(str);
@@ -81,12 +79,10 @@ function renderEditor() {
       <button type="button" class="neon-btn small add-killcam">+ Ajouter Killcam</button>
     `;
 
-    // Populate classes
     ['Rogue','Paladin','Mage','Chasseur','Druid','Warlock']
       .forEach(cl => card.querySelector('select').add(new Option(cl, cl)));
     card.querySelector('select').value = p.classe;
 
-    // Killcam inputs
     const kcContainer = card.querySelector('.killcam-inputs');
     function addKillcamInput(url = '') {
       const wrapper = document.createElement('div');
