@@ -28,19 +28,38 @@ window.addEventListener('DOMContentLoaded', () => {
 function initAdmin() {
   document.getElementById('btn-login').addEventListener('click', onLogin);
   document.getElementById('btn-save').addEventListener('click', onSave);
+
+  // Si l’admin est déjà connecté, on affiche directement l’éditeur
+  auth.onAuthStateChanged(user => {
+    if (user && user.email === 'wow.site.jl@gmail.com') {
+      showEditor();
+    } else {
+      showLoginForm();
+    }
+  });
 }
 
-async function onLogin() {
-  const u = document.getElementById('username').value.trim();
-  const p = document.getElementById('password').value;
-  const hash = await sha256Hex(`${u}:${p}`);
-  if (hash === ADMIN_CREDENTIAL_HASH) {
-    document.getElementById('login-form').classList.add('hidden');
-    document.getElementById('editor').classList.remove('hidden');
-    renderEditor();
-  } else {
-    document.getElementById('login-error').textContent = 'Identifiant ou mot de passe incorrect';
-  }
+function onLogin() {
+  const email = document.getElementById('email').value.trim();
+  const pwd   = document.getElementById('password').value;
+  auth.signInWithEmailAndPassword(email, pwd)
+    .then(() => {
+      // l'événement onAuthStateChanged se chargera d'afficher l'éditeur
+    })
+    .catch(err => {
+      document.getElementById('login-error').textContent = 'Email ou mot de passe incorrect';
+    });
+}
+
+function showEditor() {
+  document.getElementById('login-form').classList.add('hidden');
+  document.getElementById('editor').classList.remove('hidden');
+  renderEditor();
+}
+
+function showLoginForm() {
+  document.getElementById('editor').classList.add('hidden');
+  document.getElementById('login-form').classList.remove('hidden');
 }
 
 function renderEditor() {
