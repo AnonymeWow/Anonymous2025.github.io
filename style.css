@@ -1,0 +1,36 @@
+/* Réinitialisation légère */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #1a1a1a; color: #f0f0f0; }
+header { background: #333; padding: 1rem; text-align: center; }
+header h1 { font-size: 2rem; }
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+.card { background: #2b2b2b; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
+.card header { background: #444; padding: 0.5rem; text-align: center; }
+.card header h2 { font-size: 1.2rem; }
+.card .content { padding: 0.75rem; flex: 1; }
+.content p, .content label { margin-bottom: 0.5rem; }
+.content .status, .content .level { font-weight: bold; }
+
+.btn-stream, .btn-increment {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  background: #9146ff;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  margin: 0.25rem 0.1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 0.9rem;
+}
+.btn-stream:hover, .btn-increment:hover { background: #772ce8; }
+select { width: 100%; padding: 0.4rem; margin-bottom: 0.5rem; border-radius: 4px; border: 1px solid #555; background: #1a1a1a; color: #f0f0f0; }
+footer { text-align: center; padding: 1rem; font-size: 0.9rem; }
