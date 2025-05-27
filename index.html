@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Stats - WoW HC Tracker</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Polices WoW : Friz Quadrata ou alternative -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
@@ -14,29 +13,37 @@
   <div class="bg-blur"></div>
   <main>
     <h1 class="neon-title">Statistiques Joueurs</h1>
-
-    <!-- Bouton Retour Admin -->
     <div class="actions top-right">
       <button id="btn-admin" class="neon-btn">Accéder à l'Admin</button>
     </div>
-
     <div id="players-container" class="grid-cards"></div>
-
-    <!-- Nouveau wrapper pour les 3 colonnes -->
     <section class="stats-flex">
-     <!-- Gauche : Classement Niveaux -->
       <div id="leaderboard-levels" class="leaderboard neon-card"></div>
-
-      <!-- Centre : Killcams -->
       <div id="killcam-section" class="neon-card killcams">
         <h2>Killcam</h2>
         <ul id="killcam-list"></ul>
       </div>
-
-      <!-- Droite : Classement Morts -->
       <div id="leaderboard-deaths" class="leaderboard neon-card"></div>
     </section>
   </main>
+
+  <!-- Firebase SDK + config -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDr92ELmBufANmeByuo8Tec7b1ZrmIsXBU",
+      authDomain: "wow-hc-tracker.firebaseapp.com",
+      databaseURL: "https://wow-hc-tracker-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "wow-hc-tracker",
+      storageBucket: "wow-hc-tracker.firebasestorage.app",
+      messagingSenderId: "275341751162",
+      appId: "1:275341751162:web:392a00f3bde955e889dcc3",
+      measurementId: "G-D8FW1JL90Y"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
