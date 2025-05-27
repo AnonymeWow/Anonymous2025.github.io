@@ -15,8 +15,8 @@
     <div id="login-form" class="neon-card">
       <h2>Connexion Admin</h2>
       <label>
-        Identifiant
-        <input type="text" id="username" placeholder="Admin User">
+        Email
+        <input type="email" id="email" placeholder="">
       </label>
       <label>
         Mot de passe
@@ -37,6 +37,7 @@
 
   <!-- Firebase SDK + config -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script>
     const firebaseConfig = {
@@ -50,7 +51,8 @@
       measurementId: "G-D8FW1JL90Y"
     };
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+      const db = firebase.database();
+      const auth = firebase.auth();
   </script>
   <script src="script.js"></script>
 </body>
