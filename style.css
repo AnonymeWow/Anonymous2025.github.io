@@ -1,0 +1,141 @@
+/* style.css */
+/* Variables couleur néon */
+:root {
+  --bg: #0d0d0d;
+  --panel: rgba(20,20,30,0.85);
+  --text: #e0e0e0;
+  --accent: #00ffff;
+  --accent2: #ff00ff;
+}
+
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  font-family: 'Orbitron', sans-serif;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+.bg-blur {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background:
+    radial-gradient(circle at center, rgba(0,255,255,0.1), transparent 70%),
+    radial-gradient(circle at top right, rgba(255,0,255,0.1), transparent 70%);
+  backdrop-filter: blur(8px);
+  z-index: -1;
+}
+main { padding: 2rem; }
+.neon-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+  margin-bottom: 2rem;
+}
+.hidden { display: none; }
+
+/* Boutons */
+.neon-btn {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent2);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.neon-btn:hover {
+  box-shadow: 0 0 16px var(--accent), 0 0 32px var(--accent2);
+}
+
+/* Cards néon */
+.neon-card {
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 0 8px var(--accent);
+  transition: transform 0.2s ease;
+}
+.neon-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Formulaire de login */
+#login-form {
+  max-width: 360px;
+  margin: 4rem auto;
+}
+#login-form h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+#login-form label {
+  display: block;
+  margin-bottom: 1rem;
+}
+#login-form input {
+  width: 100%;
+  padding: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--accent);
+  border-radius: 0.5rem;
+  color: var(--text);
+}
+#login-error {
+  color: #FF6B6B;
+  margin-top: 0.5rem;
+}
+
+/* Grid pour cards */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap: 1.5rem;
+}
+
+/* Actions (boutons) */
+.actions {
+  text-align: right;
+  margin-top: 1rem;
+}
+.actions.admin-return {
+  margin-bottom: 1rem;
+}
+
+/* Leaderboards */
+.leaderboards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+.leaderboard h2 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  color: var(--accent2);
+  text-shadow: 0 0 6px var(--accent2);
+}
+.leaderboard ol {
+  list-style: none;
+  counter-reset: rank;
+}
+.leaderboard li {
+  counter-increment: rank;
+  padding-left: 2rem;
+  margin-bottom: 0.8rem;
+  position: relative;
+}
+.leaderboard li::before {
+  content: counter(rank);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  color: var(--accent);
+}
+.leaderboard li span {
+  margin-left: 0.5rem;
+}
