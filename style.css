@@ -96,6 +96,29 @@ main { padding: 2rem; }
   gap: 1.5rem;
 }
 
+/* Conteneur trio : 3 colonnes côte-à-côte */
+.stats-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 2rem;
+}
+
+/* Chaque carte prendra jusqu'à 30% de largeur (min 280px) */
+.stats-flex > .neon-card {
+  flex: 1 1 280px;
+  max-width: 30%;
+}
+
+/* Pour mobile, on empile */
+@media (max-width: 900px) {
+  .stats-flex > .neon-card {
+    max-width: 100%;
+  }
+}
+
 /* Actions (boutons) */
 .actions {
   text-align: right;
