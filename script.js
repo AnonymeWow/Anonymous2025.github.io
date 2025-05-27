@@ -134,10 +134,15 @@ function displayLevelLeaderboard(data){
     '</ol>';
 }
 
-function displayKillcams(data){
+function displayKillcams(data) {
   const ul = document.getElementById('killcam-list');
   ul.innerHTML = data
-    .filter(p => p.killcam)
-    .map(p => `<li>${p.name}: <a href="${p.killcam}" target="_blank">${p.killcam}</a></li>`)
+    .filter(p => p.killcams && p.killcams.length)
+    .map(p => {
+      const links = p.killcams
+        .map(url => `<a href="${url}" target="_blank">${url}</a>`)
+        .join('<br>');
+      return `<li><strong>${p.name}</strong><br>${links}</li>`;
+    })
     .join('');
 }
