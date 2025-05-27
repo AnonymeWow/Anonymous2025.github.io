@@ -1,17 +1,15 @@
-// script.js
-
 // ====== ADMIN CONFIG ======
 const ADMIN_USER = 'WowJL2025';
 const ADMIN_PASS = 'Z@5nW8%uF2kL#pR1';
 
 // ====== DONNÉES PAR DÉFAUT ======
 const playersDefault = [
-  { name:'Aenot',       classe:'Rogue',   lvl:10, morts:1, stream:'https://www.twitch.tv/aenot',       killcam:'' },
-  { name:'JLTomy',      classe:'Paladin', lvl:14, morts:0, stream:'https://www.twitch.tv/jltomy',      killcam:'' },
-  { name:'Fana',        classe:'Mage',    lvl:13, morts:0, stream:'https://www.twitch.tv/fana',        killcam:'' },
-  { name:'Nikos',       classe:'Rogue',   lvl:7,  morts:2, stream:'https://www.twitch.tv/nikos',       killcam:'' },
-  { name:'Viggy_Night', classe:'Chasseur',lvl:5,  morts:3, stream:'https://www.twitch.tv/viggy_night',killcam:'' },
-  { name:'FakeMonster', classe:'Mage',    lvl:18, morts:0, stream:'https://www.twitch.tv/Fakemonster', killcam:'' }
+  { name:'Aenot',       classe:'Rogue',   lvl:10, morts:1, stream:'https://www.twitch.tv/aenot',       killcams: [] },
+  { name:'JLTomy',      classe:'Paladin', lvl:14, morts:0, stream:'https://www.twitch.tv/jltomy',      killcams: [] },
+  { name:'Fana',        classe:'Mage',    lvl:13, morts:0, stream:'https://www.twitch.tv/fana',        killcams: [] },
+  { name:'Nikos',       classe:'Rogue',   lvl:7,  morts:2, stream:'https://www.twitch.tv/nikos',       killcams: [] },
+  { name:'Viggy_Night', classe:'Chasseur',lvl:5,  morts:3, stream:'https://www.twitch.tv/viggy_night',killcams: [] },
+  { name:'FakeMonster', classe:'Mage',    lvl:18, morts:0, stream:'https://www.twitch.tv/Fakemonster', killcams: [] }
 ];
 
 // ====== INIT ======
@@ -39,16 +37,42 @@ function initAdmin(){
   document.getElementById('btn-save')
     .addEventListener('click', () => {
       saveData();
-      window.location.href = 'index.html';
+      window.location.href = 'client.html';
     });
 }
 
 function renderEditor(){
   const container = document.getElementById('edit-container');
   container.innerHTML = '';
+
   getStoredData().forEach(p => {
     const card = document.createElement('div');
     card.className = 'neon-card';
+
+    // Zone killcams dynamique
+    const kcContainer = document.createElement('div');
+    kcContainer.className = 'killcam-inputs';
+    (p.killcams || []).forEach(url => {
+      const inp = document.createElement('input');
+      inp.type = 'url';
+      inp.placeholder = 'https://...';
+      inp.value = url;
+      inp.setAttribute('data-field', 'killcams');
+      kcContainer.appendChild(inp);
+    });
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.textContent = '+ Ajouter Killcam';
+    addBtn.className = 'btn neon-btn small';
+    addBtn.addEventListener('click', () => {
+      const newInp = document.createElement('input');
+      newInp.type = 'url';
+      newInp.placeholder = 'https://...';
+      newInp.setAttribute('data-field', 'killcams');
+      kcContainer.appendChild(newInp);
+    });
+
     card.innerHTML = `
       <header><h2>${p.name}</h2></header>
       <label>Classe:
@@ -60,15 +84,20 @@ function renderEditor(){
       <label>Morts:
         <input type="number" data-field="morts" min="0" value="${p.morts}">
       </label>
-      <label>Ajout de Killcam:
-        <input type="url" data-field="killcam" placeholder="https://... " value="${p.killcam}">
+      <label>Stream:
+        <input type="url" data-field="stream" value="${p.stream}">
       </label>
+      <label>Killcams:</label>
     `;
-    // Remplir la select
+    // remplir la select
+    const sel = card.querySelector('select');
     ['Rogue','Paladin','Mage','Chasseur','Druid','Warlock']
-      .forEach(c => card.querySelector('select').add(new Option(c, c)));
-    card.querySelector('select').value = p.classe;
-    container.append(card);
+      .forEach(c => sel.add(new Option(c, c)));
+    sel.value = p.classe;
+
+    card.appendChild(kcContainer);
+    card.appendChild(addBtn);
+    container.appendChild(card);
   });
 }
 
@@ -76,15 +105,22 @@ function saveData(){
   const cards = document.querySelectorAll('#edit-container .neon-card');
   const data = Array.from(cards).map(card => {
     const name   = card.querySelector('h2').textContent;
-    const fields = card.querySelectorAll('[data-field]');
-    const obj = { name };
-    fields.forEach(el => {
+    const obj = { name, killcams: [] };
+    card.querySelectorAll('[data-field]').forEach(el => {
       const key = el.getAttribute('data-field');
-      const val = el.value;
-      obj[key] = (key === 'lvl' || key === 'morts') ? +val : val;
+      if (key === 'killcams') {
+        // nulle valeur ignorée
+        if (el.value.trim()) obj.killcams.push(el.value.trim());
+      } else if (key === 'lvl' || key === 'morts') {
+        obj[key] = +el.value;
+      } else {
+        obj[key] = el.value;
+      }
     });
-    // conserver le stream d'origine
-    obj.stream = playersDefault.find(x => x.name === name).stream;
+    // conserver le stream s'il n'a pas été changé
+    if (!obj.stream) {
+      obj.stream = playersDefault.find(x => x.name === name).stream;
+    }
     return obj;
   });
   localStorage.setItem('wow_hc_players', JSON.stringify(data));
@@ -137,7 +173,7 @@ function displayLevelLeaderboard(data){
 function displayKillcams(data){
   const ul = document.getElementById('killcam-list');
   ul.innerHTML = data
-    .filter(p => p.killcam)
-    .map(p => `<li>${p.name}: <a href="${p.killcam}" target="_blank">${p.killcam}</a></li>`)
+    .flatMap(p => (p.killcams || []).map(url => ({ name: p.name, url })))
+    .map(item => `<li>${item.name}: <a href="${item.url}" target="_blank">${item.url}</a></li>`)
     .join('');
 }
