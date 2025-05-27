@@ -100,6 +100,12 @@ function addKillcamInput(container, url = '') {
 }
 
 async function onSave() {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    alert("Vous devez être connecté pour enregistrer.");
+    return;
+  }
+
   const data = Array.from(document.querySelectorAll('#edit-container .neon-card')).map(card => {
     return {
       name: card.querySelector('h2').textContent,
@@ -107,15 +113,13 @@ async function onSave() {
       lvl: +card.querySelector('input[data-field="lvl"]').value,
       morts: +card.querySelector('input[data-field="morts"]').value,
       stream: card.querySelector('input[data-field="stream"]').value.trim(),
-      killcams: Array.from(card.querySelectorAll('input[data-field="killcams"]'))
+      killcams: Array.from(card.querySelectorAll('input[data-field=\"killcams\"]'))
         .map(input => input.value.trim())
         .filter(url => url !== '')
     };
   });
-  await db.ref().update({
-    wow_hc_players: data,
-    adminWriteKey: ADMIN_WRITE_KEY
-  });
+
+  await db.ref('wow_hc_players').set(data);
   window.location.href = 'index.html';
 }
 
