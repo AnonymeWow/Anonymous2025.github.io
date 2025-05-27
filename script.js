@@ -1,25 +1,31 @@
-// script.js (version finale intégrée et corrigée)
+// script.js
 
-// ====== CONFIG ADMIN ======
-const ADMIN_USER = 'WowJL2025';
-const ADMIN_PASS = 'Z@5nW8%uF2kL#pR1';
+// ====== PROTECTION LOGIN CÔTÉ CLIENT (hashé) ======
+const ADMIN_CREDENTIAL_HASH = 'e925aca17eb30013cb8e7bc6f06db3f1df923e5bdc4771e3e24eed73d7419a18';
+
+async function sha256Hex(str) {
+  const buf = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
 
 // ====== DONNÉES PAR DÉFAUT ======
 const playersDefault = [
-  { name: 'Aenot',       classe: 'Rogue',   lvl: 10, morts: 1, stream: 'https://twitch.tv/aenot',        killcams: [] },
-  { name: 'JLTomy',      classe: 'Paladin', lvl: 14, morts: 0, stream: 'https://www.twitch.tv/jltomy',   killcams: [] },
-  { name: 'Fana',        classe: 'Mage',    lvl: 13, morts: 0, stream: 'https://www.twitch.tv/fana',     killcams: [] },
-  { name: 'Nikos',       classe: 'Rogue',   lvl: 7,  morts: 2, stream: 'https://www.twitch.tv/nikos',    killcams: [] },
-  { name: 'Viggy_Night', classe: 'Chasseur',lvl: 5,  morts: 3, stream: 'https://www.twitch.tv/viggy_night', killcams: [] },
-  { name: 'FakeMonster', classe: 'Mage',    lvl: 18, morts: 0, stream: 'https://www.twitch.tv/fakemonster', killcams: [] }
+  { name: 'Aenot',       classe: 'Rogue',    lvl: 10, morts: 1, stream: 'https://twitch.tv/aenot',         killcams: [] },
+  { name: 'JLTomy',      classe: 'Paladin',  lvl: 14, morts: 0, stream: 'https://www.twitch.tv/jltomy',    killcams: [] },
+  { name: 'Fana',        classe: 'Mage',     lvl: 13, morts: 0, stream: 'https://www.twitch.tv/fana',      killcams: [] },
+  { name: 'Nikos',       classe: 'Rogue',    lvl: 7,  morts: 2, stream: 'https://www.twitch.tv/nikos',     killcams: [] },
+  { name: 'Viggy_Night', classe: 'Chasseur', lvl: 5,  morts: 3, stream: 'https://www.twitch.tv/viggy_night',killcams: [] },
+  { name: 'FakeMonster', classe: 'Mage',     lvl: 18, morts: 0, stream: 'https://www.twitch.tv/fakemonster',killcams: [] }
 ];
 
-// ====== UTILITAIRES DE STOCKAGE ======
+// ====== STOCKAGE LOCAL ======
 function getStoredData() {
   const s = localStorage.getItem('wow_hc_players');
   return s ? JSON.parse(s) : JSON.parse(JSON.stringify(playersDefault));
 }
-
 function setStoredData(data) {
   localStorage.setItem('wow_hc_players', JSON.stringify(data));
 }
@@ -27,27 +33,27 @@ function setStoredData(data) {
 // ====== DÉTECTION DE PAGE ======
 const isAdminPage = window.location.pathname.endsWith('admin.html');
 
-// ====== INITIALISATION ======
 window.addEventListener('DOMContentLoaded', () => {
   if (isAdminPage) initAdmin();
   else initClient();
 });
 
-// ====== FONCTIONS ADMIN ======
+// ====== ADMIN ======
 function initAdmin() {
   document.getElementById('btn-login').addEventListener('click', onLogin);
   document.getElementById('btn-save').addEventListener('click', onSave);
 }
 
-function onLogin() {
-  const u = document.getElementById('username').value;
-  const p = document.getElementById('password').value;
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
+async function onLogin() {
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value;
+  const hash = await sha256Hex(`${user}:${pass}`);
+  if (hash === ADMIN_CREDENTIAL_HASH) {
     document.getElementById('login-form').classList.add('hidden');
     document.getElementById('editor').classList.remove('hidden');
     renderEditor();
   } else {
-    document.getElementById('login-error').textContent = 'Erreur de connexion';
+    document.getElementById('login-error').textContent = 'Identifiant ou mot de passe incorrect';
   }
 }
 
@@ -59,7 +65,7 @@ function renderEditor() {
   data.forEach((p, idx) => {
     const card = document.createElement('div');
     card.className = 'neon-card';
-    card.setAttribute('data-index', idx);
+    card.dataset.index = idx;
     card.innerHTML = `
       <header><h2>${p.name}</h2></header>
       <label>Classe :</label>
@@ -75,13 +81,12 @@ function renderEditor() {
       <button type="button" class="neon-btn small add-killcam">+ Ajouter Killcam</button>
     `;
 
-    // Remplir la liste des classes
-    ['Rogue','Paladin','Mage','Chasseur','Druid','Warlock'].forEach(cl => {
-      card.querySelector('select[data-field="classe"]').add(new Option(cl, cl));
-    });
-    card.querySelector('select[data-field="classe"]').value = p.classe;
+    // Populate classes
+    ['Rogue','Paladin','Mage','Chasseur','Druid','Warlock']
+      .forEach(cl => card.querySelector('select').add(new Option(cl, cl)));
+    card.querySelector('select').value = p.classe;
 
-    // Killcams
+    // Killcam inputs
     const kcContainer = card.querySelector('.killcam-inputs');
     function addKillcamInput(url = '') {
       const wrapper = document.createElement('div');
@@ -91,7 +96,7 @@ function renderEditor() {
 
       const input = document.createElement('input');
       input.type = 'url';
-      input.setAttribute('data-field', 'killcams');
+      input.dataset.field = 'killcams';
       input.value = url;
       input.placeholder = 'https://...';
       input.style.flex = '1';
@@ -107,11 +112,9 @@ function renderEditor() {
       wrapper.append(input, btn);
       kcContainer.appendChild(wrapper);
     }
-    // Inputs existants
+
     (p.killcams || []).forEach(addKillcamInput);
-    // Bouton ajout
-    card.querySelector('.add-killcam')
-        .addEventListener('click', () => addKillcamInput());
+    card.querySelector('.add-killcam').addEventListener('click', () => addKillcamInput());
 
     container.appendChild(card);
   });
@@ -120,14 +123,12 @@ function renderEditor() {
 function onSave() {
   const data = getStoredData();
   document.querySelectorAll('#edit-container .neon-card').forEach(card => {
-    const idx = card.getAttribute('data-index');
+    const idx = card.dataset.index;
     const player = data[idx];
-    // Champs simples
     player.classe = card.querySelector('select[data-field="classe"]').value;
     player.lvl    = +card.querySelector('input[data-field="lvl"]').value;
     player.morts  = +card.querySelector('input[data-field="morts"]').value;
     player.stream = card.querySelector('input[data-field="stream"]').value.trim();
-    // Killcams
     player.killcams = [];
     card.querySelectorAll('input[data-field="killcams"]').forEach(input => {
       const url = input.value.trim();
@@ -135,15 +136,13 @@ function onSave() {
     });
   });
   setStoredData(data);
-  // Retour au client
   window.location.href = 'index.html';
 }
 
-// ====== FONCTIONS CLIENT ======
+// ====== CLIENT ======
 function initClient() {
   document.getElementById('btn-admin')
     .addEventListener('click', () => window.location.href = 'admin.html');
-
   const data = getStoredData();
   displayPlayers(data);
   displayDeathsLeaderboard(data);
