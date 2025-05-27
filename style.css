@@ -349,3 +349,19 @@ main > .actions.top-right {
     0 0 8px var(--wow-gold),
     0 0 16px var(--wow-gold);
 }
+
+/* Bouton Multitwitch en haut à gauche */
+.actions.top-left {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 5;
+}
+
+/* Adapter l’espacement si besoin pour mobile */
+@media (max-width: 768px) {
+  .actions.top-left {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+}
