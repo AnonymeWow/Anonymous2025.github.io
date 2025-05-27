@@ -1,17 +1,15 @@
-// script.js
-
 // ====== ADMIN CONFIG ======
 const ADMIN_USER = 'WowJL2025';
 const ADMIN_PASS = 'Z@5nW8%uF2kL#pR1';
 
 // ====== DONNÉES PAR DÉFAUT ======
 const playersDefault = [
-  { name:'Aenot', classe:'Rogue', lvl:10, morts:1, stream:'https://www.twitch.tv/aenot', killcams: [] },
-  { name:'JLTomy', classe:'Paladin', lvl:14, morts:0, stream:'https://www.twitch.tv/jltomy',killcams: [] },
-  { name:'Fana', classe:'Mage',  lvl:13, morts:0, stream:'https://www.twitch.tv/fana',killcams: [] },
-  { name:'Nikos', classe:'Rogue', lvl:7,  morts:2, stream:'https://www.twitch.tv/nikos',killcams: [] },
-  { name:'Viggy_Night', classe:'Chasseur',lvl:5,  morts:3, stream:'https://www.twitch.tv/viggy_night',killcams: [] },
-  { name:'FakeMonster', classe:'Mage', lvl:18, morts:0, stream:'https://www.twitch.tv/Fakemonster',killcams: [] },
+  { name: 'Aenot', classe: 'Rogue', lvl: 10, morts: 1, killcams: [] },
+  { name: 'JLTomy', classe: 'Paladin', lvl: 14, morts: 0, killcams: [] },
+  { name: 'Fana', classe: 'Mage', lvl: 13, morts: 0, killcams: [] },
+  { name: 'Nikos', classe: 'Rogue', lvl: 7, morts: 2, killcams: [] },
+  { name: 'Viggy_Night', classe: 'Chasseur', lvl: 5, morts: 3, killcams: [] },
+  { name: 'FakeMonster', classe: 'Mage', lvl: 18, morts: 0, killcams: [] }
 ];
 
 // ====== INIT ======
@@ -22,25 +20,23 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // ====== ADMIN ======
-function initAdmin(){
-  document.getElementById('btn-login')
-    .addEventListener('click', () => {
-      const u = document.getElementById('username').value;
-      const p = document.getElementById('password').value;
-      if (u === ADMIN_USER && p === ADMIN_PASS) {
-        document.getElementById('login-form').classList.add('hidden');
-        document.getElementById('editor').classList.remove('hidden');
-        renderEditor();
-      } else {
-        document.getElementById('login-error').textContent = 'Erreur de connexion';
-      }
-    });
+function initAdmin() {
+  document.getElementById('btn-login').addEventListener('click', () => {
+    const u = document.getElementById('username').value;
+    const p = document.getElementById('password').value;
+    if (u === ADMIN_USER && p === ADMIN_PASS) {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('editor').classList.remove('hidden');
+      renderEditor();
+    } else {
+      document.getElementById('login-error').textContent = 'Erreur de connexion';
+    }
+  });
 
-  document.getElementById('btn-save')
-    .addEventListener('click', () => {
-      saveData();
-      window.location.href = 'index.html';
-    });
+  document.getElementById('btn-save').addEventListener('click', () => {
+    saveData();
+    window.location.href = 'index.html';
+  });
 }
 
 function renderEditor() {
@@ -63,21 +59,16 @@ function renderEditor() {
       <label>Morts:
         <input type="number" data-field="morts" min="0" value="${p.morts}">
       </label>
-      <label>Stream:
-        <input type="url" data-field="stream" value="${p.stream}">
-      </label>
       <label>Killcams:</label>
       <div class="killcam-inputs"></div>
       <button class="neon-btn small add-killcam">+ Ajouter Killcam</button>
     `;
 
-    // Remplir la select
-    ['Rogue', 'Paladin', 'Mage', 'Chasseur', 'Druid', 'Warlock'].forEach(c =>
-      card.querySelector('select').add(new Option(c, c))
+    ['Rogue', 'Paladin', 'Mage', 'Chasseur', 'Druid', 'Warlock'].forEach(cl =>
+      card.querySelector('select').add(new Option(cl, cl))
     );
     card.querySelector('select').value = p.classe;
 
-    // Remplir les champs killcam existants
     const killcamContainer = card.querySelector('.killcam-inputs');
     (p.killcams || []).forEach(url => {
       const input = document.createElement('input');
@@ -88,7 +79,6 @@ function renderEditor() {
       killcamContainer.appendChild(input);
     });
 
-    // Bouton pour en ajouter
     card.querySelector('.add-killcam').addEventListener('click', () => {
       const input = document.createElement('input');
       input.type = 'url';
@@ -101,7 +91,7 @@ function renderEditor() {
   });
 }
 
-unction saveData() {
+function saveData() {
   const cards = document.querySelectorAll('#edit-container .neon-card');
   const data = Array.from(cards).map(card => {
     const name = card.querySelector('h2').textContent;
@@ -125,8 +115,9 @@ unction saveData() {
 
   localStorage.setItem('wow_hc_players', JSON.stringify(data));
 }
+
 // ====== CLIENT ======
-function initClient(){
+function initClient() {
   const data = getStoredData();
   displayPlayers(data);
   displayDeathsLeaderboard(data);
@@ -136,12 +127,12 @@ function initClient(){
     .addEventListener('click', () => window.location.href = 'admin.html');
 }
 
-function getStoredData(){
+function getStoredData() {
   const s = localStorage.getItem('wow_hc_players');
   return s ? JSON.parse(s) : playersDefault;
 }
 
-function displayPlayers(data){
+function displayPlayers(data) {
   const c = document.getElementById('players-container');
   c.innerHTML = data.map(p => `
     <div class="neon-card">
@@ -153,16 +144,16 @@ function displayPlayers(data){
   `).join('');
 }
 
-function displayDeathsLeaderboard(data){
-  const sorted = [...data].sort((a,b) => b.morts - a.morts);
-   document.getElementById('leaderboard-deaths').innerHTML =
-     '<h2>Classement Morts</h2><ol>' +
-     sorted.map(p => `<li>${p.name}<span>${p.morts} morts</span></li>`).join('') +
-     '</ol>';
+function displayDeathsLeaderboard(data) {
+  const sorted = [...data].sort((a, b) => b.morts - a.morts);
+  document.getElementById('leaderboard-deaths').innerHTML =
+    '<h2>Classement Morts</h2><ol>' +
+    sorted.map(p => `<li>${p.name}<span>${p.morts} morts</span></li>`).join('') +
+    '</ol>';
 }
 
-function displayLevelLeaderboard(data){
-  const sorted = [...data].sort((a,b) => b.lvl - a.lvl);
+function displayLevelLeaderboard(data) {
+  const sorted = [...data].sort((a, b) => b.lvl - a.lvl);
   document.getElementById('leaderboard-levels').innerHTML =
     '<h2>Classement Niveaux</h2><ol>' +
     sorted.map(p => `<li>${p.name}<span>lvl ${p.lvl}</span></li>`).join('') +
