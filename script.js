@@ -119,11 +119,11 @@ function displayPlayers(data){
 }
 
 function displayDeathsLeaderboard(data){
-  const sorted = [...data].sort((a,b) => a.morts - b.morts);
-  document.getElementById('leaderboard-deaths').innerHTML =
-    '<h2>Classement Morts</h2><ol>' +
-    sorted.map(p => `<li>${p.name}<span>${p.morts} morts</span></li>`).join('') +
-    '</ol>';
+  const sorted = [...data].sort((a,b) => b.morts - a.morts);
+   document.getElementById('leaderboard-deaths').innerHTML =
+     '<h2>Classement Morts</h2><ol>' +
+     sorted.map(p => `<li>${p.name}<span>${p.morts} morts</span></li>`).join('') +
+     '</ol>';
 }
 
 function displayLevelLeaderboard(data){
