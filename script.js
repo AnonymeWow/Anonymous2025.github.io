@@ -40,7 +40,7 @@ function initAdmin(){
     .addEventListener('click', () => {
       saveData();
       // redirection vers la page client après enregistrement
-      window.location.href = 'client.html';
+      window.location.href = 'index.html';
     });
 }
 
