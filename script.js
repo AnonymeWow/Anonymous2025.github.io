@@ -6,12 +6,12 @@ const ADMIN_PASS = 'Z@5nW8%uF2kL#pR1';
 
 // ====== DONNÉES PAR DÉFAUT ======
 const playersDefault = [
-  { name:'Aenot',       classe:'Rogue',   lvl:10, morts:1, stream:'https://www.twitch.tv/aenot',       killcam:'' },
-  { name:'JLTomy',      classe:'Paladin', lvl:14, morts:0, stream:'https://www.twitch.tv/jltomy',      killcam:'' },
-  { name:'Fana',        classe:'Mage',    lvl:13, morts:0, stream:'https://www.twitch.tv/fana',        killcam:'' },
-  { name:'Nikos',       classe:'Rogue',   lvl:7,  morts:2, stream:'https://www.twitch.tv/nikos',       killcam:'' },
-  { name:'Viggy_Night', classe:'Chasseur',lvl:5,  morts:3, stream:'https://www.twitch.tv/viggy_night',killcam:'' },
-  { name:'FakeMonster', classe:'Mage',    lvl:18, morts:0, stream:'https://www.twitch.tv/Fakemonster', killcam:'' }
+  { name:'Aenot', classe:'Rogue', lvl:10, morts:1, stream:'https://www.twitch.tv/aenot', killcams: [] },
+  { name:'JLTomy', classe:'Paladin', lvl:14, morts:0, stream:'https://www.twitch.tv/jltomy',killcams: [] },
+  { name:'Fana', classe:'Mage',  lvl:13, morts:0, stream:'https://www.twitch.tv/fana',killcams: [] },
+  { name:'Nikos', classe:'Rogue', lvl:7,  morts:2, stream:'https://www.twitch.tv/nikos',killcams: [] },
+  { name:'Viggy_Night', classe:'Chasseur',lvl:5,  morts:3, stream:'https://www.twitch.tv/viggy_night',killcams: [] },
+  { name:'FakeMonster', classe:'Mage', lvl:18, morts:0, stream:'https://www.twitch.tv/Fakemonster',killcams: [] },
 ];
 
 // ====== INIT ======
@@ -43,12 +43,15 @@ function initAdmin(){
     });
 }
 
-function renderEditor(){
+function renderEditor() {
   const container = document.getElementById('edit-container');
   container.innerHTML = '';
-  getStoredData().forEach(p => {
+  const data = getStoredData();
+
+  data.forEach(p => {
     const card = document.createElement('div');
     card.className = 'neon-card';
+
     card.innerHTML = `
       <header><h2>${p.name}</h2></header>
       <label>Classe:
@@ -60,36 +63,68 @@ function renderEditor(){
       <label>Morts:
         <input type="number" data-field="morts" min="0" value="${p.morts}">
       </label>
-      <label>Ajout de Killcam:
-        <input type="url" data-field="killcam" placeholder="https://... " value="${p.killcam}">
+      <label>Stream:
+        <input type="url" data-field="stream" value="${p.stream}">
       </label>
+      <label>Killcams:</label>
+      <div class="killcam-inputs"></div>
+      <button class="neon-btn small add-killcam">+ Ajouter Killcam</button>
     `;
+
     // Remplir la select
-    ['Rogue','Paladin','Mage','Chasseur','Druid','Warlock']
-      .forEach(c => card.querySelector('select').add(new Option(c, c)));
+    ['Rogue', 'Paladin', 'Mage', 'Chasseur', 'Druid', 'Warlock'].forEach(c =>
+      card.querySelector('select').add(new Option(c, c))
+    );
     card.querySelector('select').value = p.classe;
-    container.append(card);
+
+    // Remplir les champs killcam existants
+    const killcamContainer = card.querySelector('.killcam-inputs');
+    (p.killcams || []).forEach(url => {
+      const input = document.createElement('input');
+      input.type = 'url';
+      input.setAttribute('data-field', 'killcams');
+      input.value = url;
+      input.placeholder = 'https://...';
+      killcamContainer.appendChild(input);
+    });
+
+    // Bouton pour en ajouter
+    card.querySelector('.add-killcam').addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'url';
+      input.setAttribute('data-field', 'killcams');
+      input.placeholder = 'https://...';
+      killcamContainer.appendChild(input);
+    });
+
+    container.appendChild(card);
   });
 }
 
-function saveData(){
+unction saveData() {
   const cards = document.querySelectorAll('#edit-container .neon-card');
   const data = Array.from(cards).map(card => {
-    const name   = card.querySelector('h2').textContent;
-    const fields = card.querySelectorAll('[data-field]');
-    const obj = { name };
-    fields.forEach(el => {
+    const name = card.querySelector('h2').textContent;
+    const obj = { name, killcams: [] };
+
+    card.querySelectorAll('[data-field]').forEach(el => {
       const key = el.getAttribute('data-field');
-      const val = el.value;
-      obj[key] = (key === 'lvl' || key === 'morts') ? +val : val;
+      const val = el.value.trim();
+
+      if (key === 'killcams') {
+        if (val) obj.killcams.push(val);
+      } else if (key === 'lvl' || key === 'morts') {
+        obj[key] = +val;
+      } else {
+        obj[key] = val;
+      }
     });
-    // conserver le stream d'origine
-    obj.stream = playersDefault.find(x => x.name === name).stream;
+
     return obj;
   });
+
   localStorage.setItem('wow_hc_players', JSON.stringify(data));
 }
-
 // ====== CLIENT ======
 function initClient(){
   const data = getStoredData();
