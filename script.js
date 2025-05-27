@@ -159,16 +159,15 @@ function initClient() {
 function displayPlayers(data) {
   const c = document.getElementById('players-container');
   if (!c) return;
-  c.innerHTML = data.map(p => `
-    <div class="neon-card">
-      <h3>${p.name}</h3>
-      <p>${p.classe}</p>
-      <p>lvl ${p.lvl} • ${p.morts} morts</p>
-      <p>lvl ${p.lvl} • ${p.morts} mort${p.morts > 1 ? 's' : ''}</p>
-      <p>Plus haut level atteint ${p.maxLevel}</p>
-      ${p.stream ? `<a href="${p.stream}" target="_blank" class="stream-link">Live</a>` : ''}
-    </div>
-  `).join('');
+  c.innerHTML = data.map(p => 
+    `<div class="neon-card">
+       <h3>${p.name}</h3>
+       <p>${p.classe}</p>
+       <p>lvl ${p.lvl} • ${p.morts} mort${p.morts > 1 ? 's' : ''}</p>
+       <p>Plus haut level atteint ${p.maxLevel}</p>
+       ${p.stream ? `<a href="${p.stream}" target="_blank" class="stream-link">Live</a>` : ''}
+     </div>`
+  ).join('');
 }
 
 function displayDeathsLeaderboard(data) {
