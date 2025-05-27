@@ -1,7 +1,7 @@
 // script.js
 
 // ====== PROTECTION LOGIN CÔTÉ CLIENT (hashé) ======
-const ADMIN_CREDENTIAL_HASH = 'e925aca17eb30013cb8e7bc6f06db3f1df923e5bdc4771e3e24eed73d7419a18';
+const ADMIN_CREDENTIAL_HASH = 'ea3c3274b14f7bc07c9e30b63fd2636cd601084f37e261ab4ee032db68b45191';
 
 async function sha256Hex(str) {
   const buf = new TextEncoder().encode(str);
