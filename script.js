@@ -163,11 +163,12 @@ function displayDeathsLeaderboard(data){
 }
 
 function displayLevelLeaderboard(data){
-  const sorted = [...data].sort((a,b) => b.lvl - a.lvl);
-  document.getElementById('leaderboard-levels').innerHTML =
-    '<h2>Classement Niveaux</h2><ol>' +
-    sorted.map(p => `<li>${p.name}<span>lvl ${p.lvl}</span></li>`).join('') +
-    '</ol>';
+// Tri décroissant : du joueur avec le plus de morts au moins de morts
+  const sorted = [...data].sort((a,b) => b.morts - a.morts);
+   document.getElementById('leaderboard-deaths').innerHTML =
+     '<h2>Classement Morts</h2><ol>' +
+     sorted.map(p => `<li>${p.name}<span>${p.morts} morts</span></li>`).join('') +
+     '</ol>';
 }
 
 function displayKillcams(data){
