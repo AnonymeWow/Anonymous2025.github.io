@@ -1,223 +1,328 @@
-
 /* style.css */
-/* Variables couleur néon */
+/* Variables thème WoW-futuriste */
 :root {
   --bg: #0d0d0d;
   --panel: rgba(20,20,30,0.85);
   --text: #e0e0e0;
+  --text-muted: #7f8c8d;
+  --wow-gold: #cfa565;
+  --wow-arcane: #6fa8dc;
   --accent: #00ffff;
   --accent2: #ff00ff;
+  --shadow: rgba(0,0,0,0.7);
 }
 
+/* Reset & typo WoW */
 * {
-  margin: 0; padding: 0; box-sizing: border-box;
-  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 body {
   background: var(--bg);
   color: var(--text);
+  font-family: 'MedievalSharp', serif;
   overflow-x: hidden;
 }
 .bg-blur {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  position: fixed;
+  inset: 0;
   background:
-    radial-gradient(circle at center, rgba(0,255,255,0.1), transparent 70%),
-    radial-gradient(circle at top right, rgba(255,0,255,0.1), transparent 70%);
+    radial-gradient(circle, rgba(111,168,220,0.1), transparent),
+    radial-gradient(circle at top right, rgba(207,165,101,0.1), transparent);
   backdrop-filter: blur(8px);
   z-index: -1;
 }
-main { padding: 2rem; }
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Titre principal */
 .neon-title {
   text-align: center;
   font-size: 2.5rem;
-  color: var(--accent);
-  text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+  color: var(--wow-arcane);
+  text-shadow:
+    0 0 8px var(--wow-arcane),
+    0 0 16px var(--wow-gold);
   margin-bottom: 2rem;
 }
 .hidden { display: none; }
 
-/* Boutons */
+/* Boutons futuristes */
 .neon-btn {
   display: inline-block;
   padding: 0.8rem 1.5rem;
   background: var(--panel);
-  border: 1px solid var(--accent);
-  box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent2);
+  border: 1px solid var(--wow-gold);
+  box-shadow:
+    0 4px 12px var(--shadow),
+    0 0 8px var(--wow-arcane),
+    0 0 16px var(--wow-gold);
   color: var(--text);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 .neon-btn:hover {
-  box-shadow: 0 0 16px var(--accent), 0 0 32px var(--accent2);
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 16px var(--shadow),
+    0 0 12px var(--wow-arcane),
+    0 0 24px var(--wow-gold);
 }
 
-/* Cards néon */
+/* Cartes */
 .neon-card {
   background: var(--panel);
-  border: 1px solid var(--accent);
-  border-radius: 1rem;
+  border: 1px solid var(--wow-arcane);
+  border-radius: 0.8rem;
   padding: 1.5rem;
-  box-shadow: 0 0 8px var(--accent);
-  transition: transform 0.2s ease;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: transform 0.2s;
 }
 .neon-card:hover {
   transform: translateY(-4px);
 }
 
-/* Formulaire de login */
+/* Champs admin alignés verticalement */
+.neon-card label {
+  display: block;
+  font-weight: bold;
+  color: var(--wow-arcane);
+  margin-bottom: 0.3rem;
+}
+.neon-card input,
+.neon-card select {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--wow-arcane);
+  border-radius: 0.4rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Formulaire de connexion */
 #login-form {
   max-width: 360px;
   margin: 4rem auto;
+  text-align: center;
 }
 #login-form h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-}
-#login-form label {
-  display: block;
+  font-size: 2rem;
+  color: var(--wow-gold);
   margin-bottom: 1rem;
 }
 #login-form input {
-  width: 100%;
-  padding: 0.5rem;
-  background: transparent;
-  border: 1px solid var(--accent);
-  border-radius: 0.5rem;
-  color: var(--text);
-}
-#login-error {
-  color: #FF6B6B;
-  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border: 1px solid var(--wow-arcane);
 }
 
-/* Grid pour cards */
+/* Grille de joueurs */
 .grid-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
-  gap: 1.5rem;
+  gap: 1rem;
+  margin: 2rem 0;
 }
 
-/* Conteneur trio : 3 colonnes côte-à-côte */
+/* Trois colonnes côte-à-côte */
 .stats-flex {
   display: flex;
   gap: 1rem;
-  margin-top: 2rem;
+  margin: 2rem 0;
 }
-
-/* Chaque colonne (leaderboards et killcams) prend un tiers de l'espace */
-.stats-flex > .leaderboard,
-.stats-flex > .killcams {
+.stats-flex > .neon-card {
   flex: 1;
-  /* pour éviter le débordement du contenu */
-  min-width: 0;
+  min-width: 260px;
 }
 
-/* Titles et cartes conservent leur style néon */
-.stats-flex .neon-card {
-  padding: 1rem;
-}
-
-/* Responsive : sur petits écrans, on empile en colonne */
+/* Responsive */
 @media (max-width: 768px) {
   .stats-flex {
     flex-direction: column;
   }
 }
-/* Actions (boutons) */
-.actions {
-  text-align: right;
-  margin-top: 1rem;
-}
-.actions.admin-return {
-  margin-bottom: 1rem;
-}
 
-/* Leaderboards */
-.leaderboards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 2rem;
-  justify-content: center;
-}
-.leaderboard h2 {
-  margin-bottom: 1rem;
-  font-size: 1.4rem;
-  color: var(--accent2);
-  text-shadow: 0 0 6px var(--accent2);
-}
-.leaderboard ol {
-  list-style: none;
-  counter-reset: rank;
-}
-.leaderboard li {
-  counter-increment: rank;
-  padding-left: 2rem;
-  margin-bottom: 0.8rem;
-  position: relative;
-}
-.leaderboard li::before {
-  content: counter(rank);
-  position: absolute;
-  left: 0;
-  font-weight: bold;
-  color: var(--accent);
-}
-.leaderboard li span {
-  margin-left: 0.5rem;
-}
-
-.killcams {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-}
+/* Leaderboards & Killcams */
+.leaderboard h2,
 .killcams h2 {
-  margin-bottom: 1rem;
   font-size: 1.4rem;
-  color: var(--accent);
-  text-shadow: 0 0 6px var(--accent);
+  color: var(--wow-gold);
+  text-shadow: 0 0 4px var(--shadow);
+  margin-bottom: 0.8rem;
   text-align: center;
 }
+.leaderboard ol,
 .killcams ul {
   list-style: none;
   counter-reset: item;
 }
+.leaderboard li,
 .killcams li {
-  counter-increment: item;
-  margin-bottom: 0.8rem;
   position: relative;
   padding-left: 2rem;
+  margin-bottom: 0.6rem;
+  color: var(--text-muted);
 }
-.killcams li::before {
+.leaderboard li::before {
+  counter-increment: item;
   content: counter(item);
   position: absolute;
   left: 0;
+  color: var(--wow-arcane);
   font-weight: bold;
-  color: var(--accent2);
+}
+.killcams li::before {
+  counter-increment: item;
+  content: counter(item);
+  position: absolute;
+  left: 0;
+  color: var(--wow-gold);
+  font-weight: bold;
 }
 .killcams li a {
-  color: var(--text);
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--wow-arcane);
   text-decoration: underline;
   word-break: break-all;
 }
 
+/* Assure le découpage des URL longues */
+.killcams li a {
+  word-break: break-all;      /* casse en plein mot si nécessaire */
+  overflow-wrap: anywhere;    /* prend en compte tous les caractères */
+}
+
+/* Fixe largeur des colonnes dans la section stats-flex */
 .stats-flex {
   display: flex;
   gap: 1rem;
-  margin-top: 2rem;
+  justify-content: space-between;
+  margin: 2rem 0;
 }
 
-/* Chaque colonne prend exactement 1/3 */
-.stats-flex > .leaderboard,
-.stats-flex > .killcams {
-  flex: 1;
-  min-width: 0; /* pour le contenu long */
+/* 25% pour chaque leaderboard */
+.stats-flex > #leaderboard-deaths,
+.stats-flex > #leaderboard-levels {
+  flex: 0 0 25%;
 }
 
-/* Pour mobile, empile */
+/* 50% pour la section Killcam */
+.stats-flex > #killcam-section {
+  flex: 0 0 50%;
+  /* Permet le scroll horizontal si contenu trop large */
+  overflow-x: auto;
+}
+
+/* Mobile : empilement */
 @media (max-width: 768px) {
   .stats-flex {
     flex-direction: column;
   }
+}
+
+/* Nouvelle règle : */
+.stats-flex {
+  display: flex;
+  gap: 1rem;
+  margin: 2rem 0;
+  align-items: flex-start;  /* Empêche l’étirement vertical des blocs enfants */
+}
+
+/* Leaderboards à largeur fixe */
+.stats-flex > #leaderboard-deaths,
+.stats-flex > #leaderboard-levels {
+  flex: 0 0 250px;  /* largeur fixe */
+}
+
+/* Killcam prend le reste et peut défiler verticalement si besoin */
+.stats-flex > #killcam-section {
+  flex: 1;          
+  min-width: 0;     
+  max-height: 500px;      /* ou la hauteur que tu souhaites comme maxi */
+  overflow-y: auto;       /* scroll vertical si trop de contenu */
+  overflow-x: hidden;
+}
+
+/* Responsive : empilement */
+@media (max-width: 768px) {
+  .stats-flex {
+    flex-direction: column;
+  }
+  .stats-flex > #leaderboard-deaths,
+  .stats-flex > #leaderboard-levels,
+  .stats-flex > #killcam-section {
+    flex: none;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* 1) Permettre au <main> de prendre toute la largeur disponible */
+main {
+  padding: 2rem;
+  width: 100%;
+  max-width: none;   /* déverrouille la limite de 1200px */
+  margin: 0;         /* plus de centrage automatique */
+}
+
+/* 2) Grille pleine largeur pour admin (edit-container) et client (players-container) */
+.grid-cards,
+#edit-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  width: 100%;      /* occupe toute la largeur de <main> */
+  margin: 0;        /* plus de marge latérale */
+  padding: 0;       /* ajuste si besoin */
+}
+
+/* 3) S’assurer que stats-flex fait aussi 100% */
+.stats-flex {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  margin: 2rem 0;
+  align-items: flex-start;
+}
+
+/* 4) (Optionnel) si tu veux vraiment 6 colonnes max et passer à la ligne ensuite */
+@media (min-width: 1440px) {
+  .grid-cards,
+  #edit-container {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Positionne les boutons en haut à droite */
+.actions.top-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-top: -1rem;
+}
+
+/* Optionnel : évite chevauchement avec titre */
+main > .actions.top-right {
+  position: relative;
+  top: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.stream-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--wow-arcane);
+  text-decoration: underline;
+  font-weight: bold;
+}
+.stream-link:hover {
+  color: var(--wow-gold);
+  text-shadow: 0 0 4px var(--wow-gold);
 }
